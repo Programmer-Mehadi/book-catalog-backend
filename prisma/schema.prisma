@@ -1,7 +1,6 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
-
 
 datasource db {
   provider = "postgresql"
@@ -10,13 +9,76 @@ datasource db {
 
 // model create
 
+// User
 model User {
-  id         String   @id @default(uuid())
-  name       String
-  email      String   @unique
-  password   String
-  role       String   // 'admin' or 'customer'
-  contactNo  String
-  address    String
-  profileImg String
+  id               String            @id @default(uuid())
+  name             String
+  email            String            @unique
+  password         String
+  role             String // 'admin' or 'customer'
+  contactNo        String
+  address          String
+  profileImg       String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  reviewAndRatings ReviewAndRating[]
+  orders           Order[]
+
+  @@map("user")
+}
+
+// Category
+model Category {
+  id        String   @id @default(uuid())
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("category")
+}
+
+// Book
+model Book {
+  id               String            @id @default(uuid())
+  title            String
+  author           String
+  price            Float
+  genre            String
+  publicationDate  String
+  categoryId       String            @map(name: "category_id")
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  reviewAndRatings ReviewAndRating[]
+
+  @@map("book")
+}
+
+// Review And Rating
+model ReviewAndRating {
+  id        String   @id @default(uuid())
+  review    String
+  rating    Int // Accepts values between 1 and 5
+  userId    String
+  bookId    String
+  // Define relationships to User and Book models
+  user      User     @relation(fields: [userId], references: [id])
+  book      Book     @relation(fields: [bookId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("review_and_rating")
+}
+
+// order
+model Order {
+  id           String   @id @default(uuid())
+  userId       String   @map(name: "user_id")
+  orderedBooks Json
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  // Define relationship to User model
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@map("order")
 }
