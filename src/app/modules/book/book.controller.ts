@@ -3,6 +3,8 @@ import { BookService } from './book.service'
 import sendResponse from '../../../shared/sendResponse'
 import httpStatus from 'http-status'
 import catchAsync from '../../../shared/catchAsync'
+import pick from '../../../shared/pick'
+import { bookFilterableFields } from './book.constants'
 
 const createBook = catchAsync(async (req: Request, res: Response) => {
   const result = await BookService.createBook(req.body)
@@ -15,7 +17,10 @@ const createBook = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getAllBook = async (req: Request, res: Response) => {
-  const result = await BookService.getAllBook()
+  const filters = pick(req.query, bookFilterableFields)
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
+
+  const result = await BookService.getAllBook(filters, options)
   sendResponse<object>(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -44,7 +49,13 @@ const getSingleBook = async (req: Request, res: Response) => {
 }
 
 const getBookByCategory = async (req: Request, res: Response) => {
-  const result = await BookService.getBookByCategory(req.params.categoryId)
+  const filters = pick(req.query, bookFilterableFields)
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
+  const result = await BookService.getBookByCategory(
+    req.params.categoryId,
+    filters,
+    options
+  )
   if (!result) {
     sendResponse<object>(res, {
       statusCode: httpStatus.OK,
