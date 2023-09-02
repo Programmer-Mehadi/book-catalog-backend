@@ -1,10 +1,20 @@
 import express from 'express'
 import { OrderController } from './order.controller'
+import auth from '../../middlewares/auth'
+import { ENUM_USER_ROLE } from '../../../enums/user'
 
 const router = express.Router()
 
-router.post('/create-order', OrderController.createOrder)
-router.get('/', OrderController.getAllOrder)
-router.get('/:orderId', OrderController.getSingleOrder)
+router.post(
+  '/create-order',
+  auth(ENUM_USER_ROLE.CUSTOMER),
+  OrderController.createOrder
+)
+router.get('/', auth(ENUM_USER_ROLE.ADMIN), OrderController.getAllOrder)
+router.get(
+  '/:orderId',
+  auth(ENUM_USER_ROLE.CUSTOMER, ENUM_USER_ROLE.ADMIN),
+  OrderController.getSingleOrder
+)
 
 export const OrderRoutes = router
