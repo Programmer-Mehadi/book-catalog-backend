@@ -9,7 +9,7 @@ import config from '../../../config'
 const createUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const result = await AuthService.signupUserDB(req.body)
-    
+
     sendResponse<object>(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -30,7 +30,7 @@ const loginUser: RequestHandler = catchAsync(
       httpOnly: true,
     }
 
-    res.cookie('refreshToken', refreshToken, cookieOptions)
+    res.cookie('token', refreshToken, cookieOptions)
 
     res.send({
       statusCode: 200,

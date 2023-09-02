@@ -1,5 +1,10 @@
 import express from 'express'
+import { UserController } from './user.controller'
 
 const router = express.Router()
 
-export const userRoute = router
+router.get('/', UserController.getAllUser)
+router.get('/:id', UserController.getSingleUser)
+router.patch('/:id', UserController.updateUser)
+router.delete('/:id', UserController.deleteUser)
+export const UserRoutes = router
