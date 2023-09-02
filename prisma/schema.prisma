@@ -57,7 +57,7 @@ model Book {
 model ReviewAndRating {
   id        String   @id @default(uuid())
   review    String
-  rating    Int // Accepts values between 1 and 5
+  rating    Int
   userId    String
   bookId    String
   // Define relationships to User and Book models

@@ -1,10 +1,13 @@
+-- CreateEnum
+CREATE TYPE "RoleEnum" AS ENUM ('admin', 'customer');
+
 -- CreateTable
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "role" TEXT NOT NULL,
+    "role" "RoleEnum" NOT NULL,
     "contactNo" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "profileImg" TEXT NOT NULL,
