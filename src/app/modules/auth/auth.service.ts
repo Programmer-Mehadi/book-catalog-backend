@@ -31,7 +31,7 @@ const loginUserDB = async (data: ILoginUser) => {
   }
 
   //create access token & refresh token
-
+  console.log(isUserExist)
   const { id: userId, role } = isUserExist
   const accessToken = jwtHelpers.createToken(
     { userId, role },
