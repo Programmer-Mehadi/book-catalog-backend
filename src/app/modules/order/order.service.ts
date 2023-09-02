@@ -1,6 +1,5 @@
-import { Order, Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import prisma from '../../../shared/prisma'
-import { ICategory } from './order.interface'
 
 const createOrder = async (data: Prisma.OrderCreateInput) => {
   const result = await prisma.order.create({

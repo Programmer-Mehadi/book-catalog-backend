@@ -1,3 +1,8 @@
-export type ICategory = {
-  title: string
+type orderedBook = {
+  bookId: string
+  quantity: number
+}
+
+export type IOrder = {
+  orderedBooks: orderedBook[]
 }
