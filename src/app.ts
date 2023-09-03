@@ -17,7 +17,11 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req: Request, res: Response) => {
-  throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Server error')
+  res.send({
+    status: true,
+    message:
+      'Welcome to the Book Catalog Server, Server is running Successfully !',
+  })
 })
 
 app.use('/api/v1', routes)

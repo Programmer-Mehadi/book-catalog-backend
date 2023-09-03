@@ -9,6 +9,14 @@ const create = zod_1.z.object({
         }),
     }),
 });
+const update = zod_1.z.object({
+    body: zod_1.z.object({
+        title: zod_1.z.string({
+            required_error: 'Title is required',
+        }),
+    }),
+});
 exports.CategoryValidation = {
     create,
+    update,
 };

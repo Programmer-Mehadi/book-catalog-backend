@@ -27,6 +27,8 @@ exports.BookService = void 0;
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const book_constants_1 = require("./book.constants");
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
+const http_status_1 = __importDefault(require("http-status"));
 const createBook = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.book.create({
         data: data,
@@ -150,41 +152,32 @@ const getBookByCategory = (id, filters, options) => __awaiter(void 0, void 0, vo
     };
 });
 const updateBook = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const existingBook = yield prisma_1.default.book.findUnique({
+    const existingBook = yield prisma_1.default.book.findUnique({
+        where: { id: id },
+    });
+    if (!existingBook) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Book not found');
+    }
+    const result = yield prisma_1.default.book.update({
+        where: { id: id },
+        data: data,
+    });
+    if (!result) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Book not found');
+    }
+    return result;
+});
+const deleteBook = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingBook = yield prisma_1.default.book.findUnique({
+        where: { id: id },
+    });
+    if (existingBook) {
+        const result = yield prisma_1.default.book.delete({
             where: { id: id },
-        });
-        if (!existingBook) {
-            return;
-        }
-        const result = yield prisma_1.default.book.update({
-            where: { id: id },
-            data: data,
         });
         return result;
     }
-    catch (err) {
-        console.error(err);
-        throw err;
-    }
-});
-const deleteBook = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const existingBook = yield prisma_1.default.book.findUnique({
-            where: { id: id },
-        });
-        if (!existingBook) {
-            return existingBook;
-        }
-        else {
-            const result = yield prisma_1.default.book.delete({
-                where: { id: id },
-            });
-            return result;
-        }
-    }
-    catch (err) {
-        console.error(err);
+    else {
         return null;
     }
 });

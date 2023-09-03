@@ -15,10 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProfileService = void 0;
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const getProfile = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    // TODO: handle for admin and customer
     const result = yield prisma_1.default.user.findUnique({
         where: {
             id: id,
+        },
+        select: {
+            name: true,
+            email: true,
+            role: true,
+            password: true,
+            contactNo: true,
+            address: true,
+            profileImg: true,
+            createdAt: true,
+            updatedAt: true,
         },
     });
     return result;

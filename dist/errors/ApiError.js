@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class ApiError extends Error {
     constructor(statusCode, message, stack = '') {
+        console.log('statusCode', statusCode);
         super(message);
         this.statusCode = statusCode;
         if (stack) {

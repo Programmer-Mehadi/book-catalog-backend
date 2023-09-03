@@ -17,23 +17,35 @@ const order_service_1 = require("./order.service");
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const createOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield order_service_1.OrderService.createOrder(req.body);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Order created successfully',
-        data: result,
-    });
+    if ('user' in req) {
+        const result = yield order_service_1.OrderService.createOrder(req.body, req.user);
+        (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.OK,
+            success: true,
+            message: 'Order created successfully',
+            data: result,
+        });
+    }
+    else {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Please login first');
+    }
 }));
 const getAllOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.user);
     if ('user' in req) {
-        console.log('user', req.user);
         const user = req.user;
-        console.log('rr');
         if (user.role === 'customer') {
-            const result = yield order_service_1.OrderService.getAllOrder();
+            const result = yield order_service_1.OrderService.getAllOrder(user.role, user.userId);
+            (0, sendResponse_1.default)(res, {
+                statusCode: http_status_1.default.OK,
+                success: true,
+                message: 'Orders retrieved successfully',
+                data: result,
+            });
+        }
+        else {
+            const result = yield order_service_1.OrderService.getAllOrder(user.role, user.userId);
             (0, sendResponse_1.default)(res, {
                 statusCode: http_status_1.default.OK,
                 success: true,
@@ -43,24 +55,36 @@ const getAllOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
     else {
-        const result = yield order_service_1.OrderService.getAllOrder();
-        (0, sendResponse_1.default)(res, {
-            statusCode: http_status_1.default.OK,
-            success: true,
-            message: 'Orders retrieved successfully',
-            data: result,
-        });
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Please login first');
     }
 });
-const getSingleOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield order_service_1.OrderService.getSingleOrder(req.params.orderId);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Order fetched successfully',
-        data: result,
-    });
-});
+const getSingleOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if ('user' in req) {
+        const user = req.user;
+        const orderId = req.params.orderId;
+        if (user.role === 'customer') {
+            const result = yield order_service_1.OrderService.getSingleOrder(user.role, user.userId, orderId);
+            (0, sendResponse_1.default)(res, {
+                statusCode: http_status_1.default.OK,
+                success: true,
+                message: 'Orders retrieved successfully',
+                data: result,
+            });
+        }
+        else {
+            const result = yield order_service_1.OrderService.getSingleOrder(user.role, user.userId, orderId);
+            (0, sendResponse_1.default)(res, {
+                statusCode: http_status_1.default.OK,
+                success: true,
+                message: 'Orders retrieved successfully',
+                data: result,
+            });
+        }
+    }
+    else {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Please login first');
+    }
+}));
 exports.OrderController = {
     createOrder,
     getAllOrder,

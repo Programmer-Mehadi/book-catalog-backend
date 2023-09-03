@@ -37,30 +37,60 @@ const getAllCategory = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 const getSingleCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield category_service_1.CategoryService.getSingleCategory(req.params.id);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Category fetched successfully',
-        data: result,
-    });
+    if (result) {
+        (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.OK,
+            success: true,
+            message: 'Category fetched successfully',
+            data: result,
+        });
+    }
+    else {
+        (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.OK,
+            success: true,
+            message: 'Category not Found',
+            data: result,
+        });
+    }
 });
 const updateCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield category_service_1.CategoryService.updateCategory(req.params.id, req.body);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Category updated successfully',
-        data: result,
-    });
+    if (result) {
+        (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.OK,
+            success: true,
+            message: 'Category updated successfully',
+            data: result,
+        });
+    }
+    else {
+        (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.OK,
+            success: true,
+            message: 'Category Not Found',
+            data: result,
+        });
+    }
 });
 const deleteCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield category_service_1.CategoryService.deleteCategory(req.params.id);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Category deleted successfully',
-        data: result,
-    });
+    if (result) {
+        (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.OK,
+            success: true,
+            message: 'Category deleted successfully',
+            data: result,
+        });
+    }
+    else {
+        (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.OK,
+            success: true,
+            message: 'Category not Found',
+            data: result,
+        });
+    }
 });
 exports.CategoryController = {
     createCategory,

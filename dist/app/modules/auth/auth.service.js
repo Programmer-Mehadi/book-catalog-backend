@@ -30,11 +30,16 @@ const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
 const signupUserDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.user.create({
-        data: Object.assign({}, data),
-    });
-    const { password } = result, resultWithoutPassword = __rest(result, ["password"]);
-    return resultWithoutPassword;
+    try {
+        const result = yield prisma_1.default.user.create({
+            data: Object.assign({}, data),
+        });
+        const { password } = result, resultWithoutPassword = __rest(result, ["password"]);
+        return resultWithoutPassword;
+    }
+    catch (err) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, err.message);
+    }
 });
 const loginUserDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = data;
@@ -48,7 +53,6 @@ const loginUserDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'User does not exist');
     }
     //create access token & refresh token
-    console.log(isUserExist);
     const { id: userId, role } = isUserExist;
     const accessToken = jwtHelpers_1.jwtHelpers.createToken({ userId, role }, config_1.default.jwt.secret, config_1.default.jwt.expires_in);
     const refreshToken = jwtHelpers_1.jwtHelpers.createToken({ userId, role }, config_1.default.jwt.refresh_secret, config_1.default.jwt.refresh_expires_in);

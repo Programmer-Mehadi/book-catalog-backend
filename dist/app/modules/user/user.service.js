@@ -13,9 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const getAlluser = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.user.findMany();
+    const result = yield prisma_1.default.user.findMany({
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            contactNo: true,
+            address: true,
+            profileImg: true,
+            createdAt: true,
+            updatedAt: true,
+        },
+    });
     return result;
 });
 const getSingleUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -23,20 +37,49 @@ const getSingleUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
         where: {
             id: id,
         },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            contactNo: true,
+            address: true,
+            profileImg: true,
+            createdAt: true,
+            updatedAt: true,
+        },
     });
     return result;
 });
 const updateUser = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(id, data);
-    const result = yield prisma_1.default.user.update({
+    const findUser = yield prisma_1.default.user.findUnique({
         where: {
             id: id,
         },
-        data: data,
     });
-    return result;
+    if (!findUser)
+        return null;
+    try {
+        const result = yield prisma_1.default.user.update({
+            where: {
+                id: id,
+            },
+            data: data,
+        });
+        return result;
+    }
+    catch (err) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, err.message);
+    }
 });
 const deleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const findData = yield prisma_1.default.user.findUnique({
+        where: {
+            id: id,
+        },
+    });
+    if (!findData)
+        return null;
     const result = yield prisma_1.default.user.delete({
         where: {
             id: id,

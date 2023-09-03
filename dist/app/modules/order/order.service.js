@@ -14,25 +14,62 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderService = void 0;
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
-const createOrder = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.order.create({
-        data: data,
-    });
-    return result;
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
+const http_status_1 = __importDefault(require("http-status"));
+const createOrder = (data, userData) => __awaiter(void 0, void 0, void 0, function* () {
+    if (userData) {
+        const result = yield prisma_1.default.order.create({
+            data: Object.assign(Object.assign({}, data), { userId: userData.userId }),
+        });
+        return result;
+    }
+    else {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Please login first');
+    }
 });
-const getAllOrder = () => __awaiter(void 0, void 0, void 0, function* () {
-    // TODO: handle for admin and customer
-    const result = yield prisma_1.default.order.findMany();
-    return result;
+const getAllOrder = (role, id) => __awaiter(void 0, void 0, void 0, function* () {
+    if (role === 'customer') {
+        const result = yield prisma_1.default.order.findMany({
+            where: {
+                userId: id,
+            },
+        });
+        return result;
+    }
+    else {
+        const result = yield prisma_1.default.order.findMany();
+        return result;
+    }
 });
-const getSingleOrder = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    // TODO: handle for admin and customer
-    const result = yield prisma_1.default.order.findUnique({
-        where: {
-            id: id,
-        },
-    });
-    return result;
+const getSingleOrder = (role, userId, orderId) => __awaiter(void 0, void 0, void 0, function* () {
+    if (role === 'customer') {
+        let result = yield prisma_1.default.order.findUnique({
+            where: {
+                id: orderId,
+            },
+        });
+        if (!result) {
+            return null;
+        }
+        result = yield prisma_1.default.order.findUnique({
+            where: {
+                id: orderId,
+                userId: userId,
+            },
+        });
+        if (result) {
+            return result;
+        }
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'You are not authorized to view this order');
+    }
+    else {
+        const result = yield prisma_1.default.order.findUnique({
+            where: {
+                id: orderId,
+            },
+        });
+        return result;
+    }
 });
 exports.OrderService = {
     createOrder,
