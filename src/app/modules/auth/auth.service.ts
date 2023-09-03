@@ -7,13 +7,17 @@ import ApiError from '../../../errors/ApiError'
 import httpStatus from 'http-status'
 import { ILoginUser } from './auth.interface'
 const signupUserDB = async (data: IUSER) => {
-  const result = await prisma.user.create({
-    data: {
-      ...data,
-    },
-  })
-  const { password, ...resultWithoutPassword } = result
-  return resultWithoutPassword
+  try {
+    const result = await prisma.user.create({
+      data: {
+        ...data,
+      },
+    })
+    const { password, ...resultWithoutPassword } = result
+    return resultWithoutPassword
+  } catch (err: Error | any) {
+    throw new ApiError(httpStatus.NOT_FOUND, err.message as string)
+  }
 }
 
 const loginUserDB = async (data: ILoginUser) => {
@@ -31,7 +35,7 @@ const loginUserDB = async (data: ILoginUser) => {
   }
 
   //create access token & refresh token
-  console.log(isUserExist)
+
   const { id: userId, role } = isUserExist
   const accessToken = jwtHelpers.createToken(
     { userId, role },

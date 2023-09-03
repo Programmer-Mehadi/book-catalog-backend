@@ -1,6 +1,7 @@
 {
+  // "include": ["src","**/*.ts", "/index.d.ts", "*.d.ts"],
   "compilerOptions": {
-    "typeRoots": ["./src/interfaces/index.d.ts"],
+    // "typeRoots": ["src/interfaces/index.d.ts"],
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Projects */

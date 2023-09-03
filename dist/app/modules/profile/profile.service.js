@@ -12,35 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const app_1 = __importDefault(require("./app"));
-const index_1 = __importDefault(require("./config/index"));
-process.on('uncaughtException', error => {
-    process.exit(1);
-});
-let server;
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            server = app_1.default.listen(index_1.default.port, () => {
-                console.log(`App listening on port: ${index_1.default.port}`);
-            });
-        }
-        catch (err) {
-            console.log(err);
-        }
-        process.on('unhandledRejection', error => {
-            if (server) {
-                server.close(() => {
-                    process.exit(1);
-                });
-            }
-            process.exit(1);
-        });
+exports.ProfileService = void 0;
+const prisma_1 = __importDefault(require("../../../shared/prisma"));
+const getProfile = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    // TODO: handle for admin and customer
+    const result = yield prisma_1.default.user.findUnique({
+        where: {
+            id: id,
+        },
     });
-}
-main();
-process.on('SIGTERM', () => {
-    if (server) {
-        server.close();
-    }
+    return result;
 });
+exports.ProfileService = {
+    getProfile,
+};
