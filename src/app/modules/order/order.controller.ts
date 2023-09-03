@@ -3,31 +3,47 @@ import { OrderService } from './order.service'
 import sendResponse from '../../../shared/sendResponse'
 import httpStatus from 'http-status'
 import catchAsync from '../../../shared/catchAsync'
-import { ENUM_USER_ROLE } from '../../../enums/user'
+import ApiError from '../../../errors/ApiError'
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
-  const result = await OrderService.createOrder(req.body)
-  sendResponse<object>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Order created successfully',
-    data: result,
-  })
+  if ('user' in req) {
+    const result = await OrderService.createOrder(req.body, req.user)
+    sendResponse<object>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Order created successfully',
+      data: result,
+    })
+  } else {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Please login first')
+  }
 })
 
 const getAllOrder = async (req: Request, res: Response) => {
-  console.log(req.user)
   if ('user' in req) {
-    console.log('user', req.user)
     const user = req.user as {
       role?: string
       userId?: string
       iat?: number
       exp?: number
     }
-    console.log('rr')
+
     if (user.role === 'customer') {
-      const result = await OrderService.getAllOrder()
+      const result = await OrderService.getAllOrder(
+        user.role,
+        user.userId as string
+      )
+      sendResponse<object>(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Orders retrieved successfully',
+        data: result,
+      })
+    } else {
+      const result = await OrderService.getAllOrder(
+        user.role as string,
+        user.userId as string
+      )
       sendResponse<object>(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -36,25 +52,48 @@ const getAllOrder = async (req: Request, res: Response) => {
       })
     }
   } else {
-    const result = await OrderService.getAllOrder()
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Orders retrieved successfully',
-      data: result,
-    })
+    throw new ApiError(httpStatus.NOT_FOUND, 'Please login first')
   }
 }
 
-const getSingleOrder = async (req: Request, res: Response) => {
-  const result = await OrderService.getSingleOrder(req.params.orderId)
-  sendResponse<object>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Order fetched successfully',
-    data: result,
-  })
-}
+const getSingleOrder = catchAsync(async (req: Request, res: Response) => {
+  if ('user' in req) {
+    const user = req.user as {
+      role?: string
+      userId?: string
+      iat?: number
+      exp?: number
+    }
+    const orderId = req.params.orderId as string
+    if (user.role === 'customer') {
+      const result = await OrderService.getSingleOrder(
+        user.role,
+        user.userId as string,
+        orderId
+      )
+      sendResponse<object>(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Orders retrieved successfully',
+        data: result,
+      })
+    } else {
+      const result = await OrderService.getSingleOrder(
+        user.role as string,
+        user.userId as string,
+        orderId
+      )
+      sendResponse<object>(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Orders retrieved successfully',
+        data: result,
+      })
+    }
+  } else {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Please login first')
+  }
+})
 
 export const OrderController = {
   createOrder,
