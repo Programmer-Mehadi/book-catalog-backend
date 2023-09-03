@@ -7,15 +7,9 @@ type IApiReponse<T> = {
   meta?: {
     page: number
     limit: number
-    count: number | undefined
+    total: number
   }
-  data?: T | null | undefined
-}
-type IApiLoginReponse<T> = {
-  statusCode: number
-  success: boolean
-  message?: string | null
-  token?: T | null | undefined
+  data?: T | null
 }
 
 const sendResponse = <T>(res: Response, data: IApiReponse<T>): void => {
@@ -24,20 +18,7 @@ const sendResponse = <T>(res: Response, data: IApiReponse<T>): void => {
     success: data.success,
     message: data.message || null,
     meta: data.meta || null || undefined,
-    data: data.data || null,
-  }
-
-  res.status(data.statusCode).json(responseData)
-}
-export const sendLoginResponse = <T>(
-  res: Response,
-  data: IApiLoginReponse<T>
-): void => {
-  const responseData: IApiLoginReponse<T> = {
-    statusCode: data.statusCode,
-    success: data.success,
-    message: data.message || null,
-    token: data.token || null,
+    data: data.data || null || undefined,
   }
 
   res.status(data.statusCode).json(responseData)

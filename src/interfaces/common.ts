@@ -1,3 +1,5 @@
+import { IGenericErrorMessage } from './error'
+
 export type IUSER = {
   id: string
   name: string
@@ -10,8 +12,6 @@ export type IUSER = {
   createdAt: Date
   updatedAt: Date
 }
-
-import { IGenericErrorMessage } from './error'
 
 export type IGenericResponse<T> = {
   meta: {

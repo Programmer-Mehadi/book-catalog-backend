@@ -8,6 +8,8 @@ import {
   bookRelationalFieldsMapper,
   bookSearchableFields,
 } from './book.constants'
+import ApiError from '../../../errors/ApiError'
+import httpStatus from 'http-status'
 
 const createBook = async (data: Book) => {
   const result = await prisma.book.create({
@@ -147,43 +149,33 @@ const getBookByCategory = async (
   }
 }
 const updateBook = async (id: string, data: IBook) => {
-  try {
-    const existingBook = await prisma.book.findUnique({
-      where: { id: id },
-    })
+  const existingBook = await prisma.book.findUnique({
+    where: { id: id },
+  })
 
-    if (!existingBook) {
-      return
-    }
-    const result = await prisma.book.update({
-      where: { id: id },
-      data: data,
-    })
-
-    return result
-  } catch (err) {
-    console.error(err)
-    throw err
+  if (!existingBook) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found')
   }
+  const result = await prisma.book.update({
+    where: { id: id },
+    data: data,
+  })
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found')
+  }
+  return result
 }
 
 const deleteBook = async (id: string) => {
-  try {
-    const existingBook = await prisma.book.findUnique({
+  const existingBook = await prisma.book.findUnique({
+    where: { id: id },
+  })
+  if (existingBook) {
+    const result = await prisma.book.delete({
       where: { id: id },
     })
-
-    if (!existingBook) {
-      return existingBook
-    } else {
-      const result = await prisma.book.delete({
-        where: { id: id },
-      })
-
-      return result
-    }
-  } catch (err) {
-    console.error(err)
+    return result
+  } else {
     return null
   }
 }

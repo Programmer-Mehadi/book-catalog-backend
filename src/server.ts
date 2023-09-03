@@ -1,33 +1,35 @@
 import { Server } from 'http'
 import app from './app'
-import config from './config/index'
+import config from './config'
 
-process.on('uncaughtException', error => {
-  process.exit(1)
-})
+async function bootstrap() {
+  const server: Server = app.listen(config.port, () => {
+    console.info(`Server running on port ${config.port}`)
+  })
 
-let server: Server
-async function main() {
-  try {
-    server = app.listen(config.port, () => {
-      console.log(`App listening on port: ${config.port}`)
-    })
-  } catch (err) {
-    console.log(err)
-  }
-  process.on('unhandledRejection', error => {
+  const exitHandler = () => {
     if (server) {
       server.close(() => {
-        process.exit(1)
+        console.info('Server closed')
       })
     }
     process.exit(1)
+  }
+
+  const unexpectedErrorHandler = (error: unknown) => {
+    console.error(error)
+    exitHandler()
+  }
+
+  process.on('uncaughtException', unexpectedErrorHandler)
+  process.on('unhandledRejection', unexpectedErrorHandler)
+
+  process.on('SIGTERM', () => {
+    console.info('SIGTERM received')
+    if (server) {
+      server.close()
+    }
   })
 }
-main()
 
-process.on('SIGTERM', () => {
-  if (server) {
-    server.close()
-  }
-})
+bootstrap()

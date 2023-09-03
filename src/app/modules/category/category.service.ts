@@ -23,6 +23,12 @@ const getSingleCategory = async (id: string) => {
 }
 
 const updateCategory = async (id: string, data: ICategory) => {
+  const find = await prisma.category.findUnique({
+    where: {
+      id: id,
+    },
+  })
+  if (!find) return null
   const result = await prisma.category.update({
     where: {
       id: id,
@@ -33,6 +39,12 @@ const updateCategory = async (id: string, data: ICategory) => {
 }
 
 const deleteCategory = async (id: string) => {
+  const find = await prisma.category.findUnique({
+    where: {
+      id: id,
+    },
+  })
+  if (!find) return null
   const result = await prisma.category.delete({
     where: {
       id: id,

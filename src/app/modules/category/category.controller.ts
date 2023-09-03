@@ -26,32 +26,59 @@ const getAllCategory = async (req: Request, res: Response) => {
 
 const getSingleCategory = async (req: Request, res: Response) => {
   const result = await CategoryService.getSingleCategory(req.params.id)
-  sendResponse<object>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Category fetched successfully',
-    data: result,
-  })
+  if (result) {
+    sendResponse<object>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Category fetched successfully',
+      data: result,
+    })
+  } else {
+    sendResponse<object>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Category not Found',
+      data: result,
+    })
+  }
 }
 
 const updateCategory = async (req: Request, res: Response) => {
   const result = await CategoryService.updateCategory(req.params.id, req.body)
-  sendResponse<object>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Category updated successfully',
-    data: result,
-  })
+  if (result) {
+    sendResponse<object>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Category updated successfully',
+      data: result,
+    })
+  } else {
+    sendResponse<object>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Category Not Found',
+      data: result,
+    })
+  }
 }
 
 const deleteCategory = async (req: Request, res: Response) => {
   const result = await CategoryService.deleteCategory(req.params.id)
-  sendResponse<object>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Category deleted successfully',
-    data: result,
-  })
+  if (result) {
+    sendResponse<object>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Category deleted successfully',
+      data: result,
+    })
+  } else {
+    sendResponse<object>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Category not Found',
+      data: result,
+    })
+  }
 }
 export const CategoryController = {
   createCategory,
