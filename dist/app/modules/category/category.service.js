@@ -25,7 +25,6 @@ const getAllCategory = () => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const getSingleCategory = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(id);
     const result = yield prisma_1.default.category.findUnique({
         where: {
             id: id,
@@ -34,13 +33,6 @@ const getSingleCategory = (id) => __awaiter(void 0, void 0, void 0, function* ()
     return result;
 });
 const updateCategory = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
-    const find = yield prisma_1.default.category.findUnique({
-        where: {
-            id: id,
-        },
-    });
-    if (!find)
-        return null;
     const result = yield prisma_1.default.category.update({
         where: {
             id: id,
@@ -50,13 +42,6 @@ const updateCategory = (id, data) => __awaiter(void 0, void 0, void 0, function*
     return result;
 });
 const deleteCategory = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const find = yield prisma_1.default.category.findUnique({
-        where: {
-            id: id,
-        },
-    });
-    if (!find)
-        return null;
     const result = yield prisma_1.default.category.delete({
         where: {
             id: id,

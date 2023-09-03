@@ -31,18 +31,19 @@ const getAllBook = catchAsync(async (req: Request, res: Response) => {
 
 const getSingleBook = catchAsync(async (req: Request, res: Response) => {
   const result = await BookService.getSingleBook(req.params.id)
-  if (!result) {
+
+  if (result) {
     sendResponse<object>(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Book not Found',
+      message: 'Book fetched successfully',
       data: result,
     })
   } else {
     sendResponse<object>(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Book fetched successfully',
+      message: 'Book Not Found',
       data: result,
     })
   }
@@ -56,60 +57,34 @@ const getBookByCategory = catchAsync(async (req: Request, res: Response) => {
     filters,
     options
   )
-  if (!result) {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Book not Found',
-      data: result,
-    })
-  } else {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Book fetched successfully',
-      data: result,
-    })
-  }
+
+  sendResponse<object>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Book fetched successfully',
+    data: result,
+  })
 })
 
 const updateBook = catchAsync(async (req: Request, res: Response) => {
   const result = await BookService.updateBook(req.params.id, req.body)
-  if (!result) {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Book not Found',
-      data: result,
-    })
-  } else {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Book updated successfully',
-      data: result,
-    })
-  }
+  sendResponse<object>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Book updated successfully',
+    data: result,
+  })
 })
 
 const deleteBook = catchAsync(async (req: Request, res: Response) => {
   const result = await BookService.deleteBook(req.params.id)
 
-  if (result === null) {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Book not Found',
-      data: result,
-    })
-  } else {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Book deleted successfully',
-      data: result,
-    })
-  }
+  sendResponse<object>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Book deleted successfully',
+    data: result,
+  })
 })
 
 export const BookController = {

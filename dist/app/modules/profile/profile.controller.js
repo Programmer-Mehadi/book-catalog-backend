@@ -17,7 +17,8 @@ const profile_service_1 = require("./profile.service");
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
 const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
-const getProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
+const getProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if ('user' in req) {
         const user = req.user;
         const id = user.userId;
@@ -25,14 +26,14 @@ const getProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         (0, sendResponse_1.default)(res, {
             statusCode: http_status_1.default.OK,
             success: true,
-            message: 'Profile retrieved successfully',
+            message: result ? 'Profile retrieved successfully' : 'Profile not found',
             data: result,
         });
     }
     else {
         throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, 'Please login first');
     }
-});
+}));
 exports.ProfileController = {
     getProfile,
 };

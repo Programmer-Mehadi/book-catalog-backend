@@ -71,24 +71,42 @@ const getSingleOrder = catchAsync(async (req: Request, res: Response) => {
         user.userId as string,
         orderId
       )
-      sendResponse<object>(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: 'Orders retrieved successfully',
-        data: result,
-      })
+      if (result) {
+        sendResponse<object>(res, {
+          statusCode: httpStatus.OK,
+          success: true,
+          message: 'Orders retrieved successfully',
+          data: result,
+        })
+      } else {
+        sendResponse<object>(res, {
+          statusCode: httpStatus.OK,
+          success: true,
+          message: 'Orders Not Found',
+          data: result,
+        })
+      }
     } else {
       const result = await OrderService.getSingleOrder(
         user.role as string,
         user.userId as string,
         orderId
       )
-      sendResponse<object>(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: 'Orders retrieved successfully',
-        data: result,
-      })
+      if (result) {
+        sendResponse<object>(res, {
+          statusCode: httpStatus.OK,
+          success: true,
+          message: 'Orders retrieved successfully',
+          data: result,
+        })
+      } else {
+        sendResponse<object>(res, {
+          statusCode: httpStatus.OK,
+          success: true,
+          message: 'Orders Data Not Found',
+          data: result,
+        })
+      }
     }
   } else {
     throw new ApiError(httpStatus.NOT_FOUND, 'Please login first')

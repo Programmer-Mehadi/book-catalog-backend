@@ -64,21 +64,41 @@ const getSingleOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
         const orderId = req.params.orderId;
         if (user.role === 'customer') {
             const result = yield order_service_1.OrderService.getSingleOrder(user.role, user.userId, orderId);
-            (0, sendResponse_1.default)(res, {
-                statusCode: http_status_1.default.OK,
-                success: true,
-                message: 'Orders retrieved successfully',
-                data: result,
-            });
+            if (result) {
+                (0, sendResponse_1.default)(res, {
+                    statusCode: http_status_1.default.OK,
+                    success: true,
+                    message: 'Orders retrieved successfully',
+                    data: result,
+                });
+            }
+            else {
+                (0, sendResponse_1.default)(res, {
+                    statusCode: http_status_1.default.OK,
+                    success: true,
+                    message: 'Orders Not Found',
+                    data: result,
+                });
+            }
         }
         else {
             const result = yield order_service_1.OrderService.getSingleOrder(user.role, user.userId, orderId);
-            (0, sendResponse_1.default)(res, {
-                statusCode: http_status_1.default.OK,
-                success: true,
-                message: 'Orders retrieved successfully',
-                data: result,
-            });
+            if (result) {
+                (0, sendResponse_1.default)(res, {
+                    statusCode: http_status_1.default.OK,
+                    success: true,
+                    message: 'Orders retrieved successfully',
+                    data: result,
+                });
+            }
+            else {
+                (0, sendResponse_1.default)(res, {
+                    statusCode: http_status_1.default.OK,
+                    success: true,
+                    message: 'Orders Data Not Found',
+                    data: result,
+                });
+            }
         }
     }
     else {

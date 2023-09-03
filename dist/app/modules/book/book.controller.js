@@ -41,11 +41,11 @@ const getAllBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 }));
 const getSingleBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield book_service_1.BookService.getSingleBook(req.params.id);
-    if (!result) {
+    if (result) {
         (0, sendResponse_1.default)(res, {
             statusCode: http_status_1.default.OK,
             success: true,
-            message: 'Book not Found',
+            message: 'Book fetched successfully',
             data: result,
         });
     }
@@ -53,7 +53,7 @@ const getSingleBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         (0, sendResponse_1.default)(res, {
             statusCode: http_status_1.default.OK,
             success: true,
-            message: 'Book fetched successfully',
+            message: 'Book Not Found',
             data: result,
         });
     }
@@ -62,60 +62,30 @@ const getBookByCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void
     const filters = (0, pick_1.default)(req.query, book_constants_1.bookFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const result = yield book_service_1.BookService.getBookByCategory(req.params.categoryId, filters, options);
-    if (!result) {
-        (0, sendResponse_1.default)(res, {
-            statusCode: http_status_1.default.OK,
-            success: true,
-            message: 'Book not Found',
-            data: result,
-        });
-    }
-    else {
-        (0, sendResponse_1.default)(res, {
-            statusCode: http_status_1.default.OK,
-            success: true,
-            message: 'Book fetched successfully',
-            data: result,
-        });
-    }
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Book fetched successfully',
+        data: result,
+    });
 }));
 const updateBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield book_service_1.BookService.updateBook(req.params.id, req.body);
-    if (!result) {
-        (0, sendResponse_1.default)(res, {
-            statusCode: http_status_1.default.OK,
-            success: true,
-            message: 'Book not Found',
-            data: result,
-        });
-    }
-    else {
-        (0, sendResponse_1.default)(res, {
-            statusCode: http_status_1.default.OK,
-            success: true,
-            message: 'Book updated successfully',
-            data: result,
-        });
-    }
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Book updated successfully',
+        data: result,
+    });
 }));
 const deleteBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield book_service_1.BookService.deleteBook(req.params.id);
-    if (result === null) {
-        (0, sendResponse_1.default)(res, {
-            statusCode: http_status_1.default.OK,
-            success: true,
-            message: 'Book not Found',
-            data: result,
-        });
-    }
-    else {
-        (0, sendResponse_1.default)(res, {
-            statusCode: http_status_1.default.OK,
-            success: true,
-            message: 'Book deleted successfully',
-            data: result,
-        });
-    }
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Book deleted successfully',
+        data: result,
+    });
 }));
 exports.BookController = {
     createBook,

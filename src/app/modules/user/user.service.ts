@@ -39,36 +39,16 @@ const getSingleUser = async (id: string) => {
 }
 
 const updateUser = async (id: string, data: any) => {
-  const findUser = await prisma.user.findUnique({
+  const result = await prisma.user.update({
     where: {
       id: id,
     },
+    data: data,
   })
-
-  if (!findUser) return null
-
-  try {
-    const result = await prisma.user.update({
-      where: {
-        id: id,
-      },
-      data: data,
-    })
-    return result
-  } catch (err: any) {
-    throw new ApiError(httpStatus.NOT_FOUND, err.message)
-  }
+  return result
 }
 
 const deleteUser = async (id: string) => {
-  const findData = await prisma.user.findUnique({
-    where: {
-      id: id,
-    },
-  })
-
-  if (!findData) return null
-
   const result = await prisma.user.delete({
     where: {
       id: id,

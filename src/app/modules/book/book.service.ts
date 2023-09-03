@@ -92,14 +92,16 @@ const getAllBook = async (
   } catch (err) {
     console.log(err)
   }
-  const total = await prisma.book.count({})
+  const total = await prisma.book.count({
+    where: whereConditions,
+  })
 
   return {
     meta: {
       page,
       size: limit,
       total,
-      totalPage: Math.ceil(total / limit),
+      totalPage: total > 0 ? Math.ceil(total / limit) : 1,
     },
     data: result,
   }
@@ -143,41 +145,24 @@ const getBookByCategory = async (
       page,
       size: limit,
       total,
-      totalPage: Math.ceil(total / limit),
+      totalPage: total > 0 ? Math.ceil(total / limit) : 1,
     },
     data: result,
   }
 }
 const updateBook = async (id: string, data: IBook) => {
-  const existingBook = await prisma.book.findUnique({
-    where: { id: id },
-  })
-
-  if (!existingBook) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found')
-  }
   const result = await prisma.book.update({
     where: { id: id },
     data: data,
   })
-  if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found')
-  }
   return result
 }
 
 const deleteBook = async (id: string) => {
-  const existingBook = await prisma.book.findUnique({
+  const result = await prisma.book.delete({
     where: { id: id },
   })
-  if (existingBook) {
-    const result = await prisma.book.delete({
-      where: { id: id },
-    })
-    return result
-  } else {
-    return null
-  }
+  return result
 }
 
 export const BookService = {

@@ -14,7 +14,7 @@ const createCategory = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
-const getAllCategory = async (req: Request, res: Response) => {
+const getAllCategory = catchAsync(async (req: Request, res: Response) => {
   const result = await CategoryService.getAllCategory()
   sendResponse<object>(res, {
     statusCode: httpStatus.OK,
@@ -22,64 +22,39 @@ const getAllCategory = async (req: Request, res: Response) => {
     message: 'Categories retrieved successfully',
     data: result,
   })
-}
+})
 
-const getSingleCategory = async (req: Request, res: Response) => {
+const getSingleCategory = catchAsync(async (req: Request, res: Response) => {
   const result = await CategoryService.getSingleCategory(req.params.id)
-  if (result) {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Category fetched successfully',
-      data: result,
-    })
-  } else {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Category not Found',
-      data: result,
-    })
-  }
-}
+  sendResponse<object>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Category fetched successfully',
+    data: result,
+  })
+})
 
-const updateCategory = async (req: Request, res: Response) => {
+const updateCategory = catchAsync(async (req: Request, res: Response) => {
   const result = await CategoryService.updateCategory(req.params.id, req.body)
-  if (result) {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Category updated successfully',
-      data: result,
-    })
-  } else {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Category Not Found',
-      data: result,
-    })
-  }
-}
 
-const deleteCategory = async (req: Request, res: Response) => {
+  sendResponse<object>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Category updated successfully',
+    data: result,
+  })
+})
+
+const deleteCategory = catchAsync(async (req: Request, res: Response) => {
   const result = await CategoryService.deleteCategory(req.params.id)
-  if (result) {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Category deleted successfully',
-      data: result,
-    })
-  } else {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Category not Found',
-      data: result,
-    })
-  }
-}
+
+  sendResponse<object>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Category deleted successfully',
+    data: result,
+  })
+})
 export const CategoryController = {
   createCategory,
   getAllCategory,

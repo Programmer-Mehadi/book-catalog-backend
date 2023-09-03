@@ -27,8 +27,6 @@ exports.BookService = void 0;
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const book_constants_1 = require("./book.constants");
-const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
-const http_status_1 = __importDefault(require("http-status"));
 const createBook = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.book.create({
         data: data,
@@ -102,13 +100,15 @@ const getAllBook = (filters, options) => __awaiter(void 0, void 0, void 0, funct
     catch (err) {
         console.log(err);
     }
-    const total = yield prisma_1.default.book.count({});
+    const total = yield prisma_1.default.book.count({
+        where: whereConditions,
+    });
     return {
         meta: {
             page,
             size: limit,
             total,
-            totalPage: Math.ceil(total / limit),
+            totalPage: total > 0 ? Math.ceil(total / limit) : 1,
         },
         data: result,
     };
@@ -146,40 +146,23 @@ const getBookByCategory = (id, filters, options) => __awaiter(void 0, void 0, vo
             page,
             size: limit,
             total,
-            totalPage: Math.ceil(total / limit),
+            totalPage: total > 0 ? Math.ceil(total / limit) : 1,
         },
         data: result,
     };
 });
 const updateBook = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
-    const existingBook = yield prisma_1.default.book.findUnique({
-        where: { id: id },
-    });
-    if (!existingBook) {
-        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Book not found');
-    }
     const result = yield prisma_1.default.book.update({
         where: { id: id },
         data: data,
     });
-    if (!result) {
-        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Book not found');
-    }
     return result;
 });
 const deleteBook = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const existingBook = yield prisma_1.default.book.findUnique({
+    const result = yield prisma_1.default.book.delete({
         where: { id: id },
     });
-    if (existingBook) {
-        const result = yield prisma_1.default.book.delete({
-            where: { id: id },
-        });
-        return result;
-    }
-    else {
-        return null;
-    }
+    return result;
 });
 exports.BookService = {
     createBook,

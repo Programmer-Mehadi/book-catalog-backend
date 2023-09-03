@@ -14,61 +14,34 @@ const getAllUser = async (req: Request, res: Response) => {
   })
 }
 
-const getSingleUser = async (req: Request, res: Response) => {
+const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.getSingleUser(req.params.id)
-  if (result) {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'User fetched successfully',
-      data: result,
-    })
-  } else {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'User not Found',
-      data: result,
-    })
-  }
-}
+  sendResponse<object>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User fetched successfully',
+    data: result,
+  })
+})
 
 const updateUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.updateUser(req.params.id, req.body)
-  if (result) {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'User updated successfully',
-      data: result,
-    })
-  } else {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'User not Found',
-      data: result,
-    })
-  }
+  sendResponse<object>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User updated successfully',
+    data: result,
+  })
 })
 
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.deleteUser(req.params.id)
-  if (result) {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'User deleted successfully',
-      data: result,
-    })
-  } else {
-    sendResponse<object>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'User Not Found',
-      data: result,
-    })
-  }
+  sendResponse<object>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User deleted successfully',
+    data: result,
+  })
 })
 export const UserController = {
   getAllUser,
