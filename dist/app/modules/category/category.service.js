@@ -29,6 +29,9 @@ const getSingleCategory = (id) => __awaiter(void 0, void 0, void 0, function* ()
         where: {
             id: id,
         },
+        include: {
+            books: true,
+        },
     });
     return result;
 });

@@ -33,6 +33,7 @@ model Category {
   title     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  books     Book[]
 
   @@map("category")
 }
@@ -46,6 +47,7 @@ model Book {
   genre            String
   publicationDate  String
   categoryId       String
+  caterory         Category          @relation(fields: [categoryId], references: [id])
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   reviewAndRatings ReviewAndRating[]
@@ -72,7 +74,7 @@ model ReviewAndRating {
 // order
 model Order {
   id           String   @id @default(uuid())
-  userId       String   
+  userId       String
   orderedBooks Json
   status       String   @default("pending")
   createdAt    DateTime @default(now())
@@ -82,7 +84,6 @@ model Order {
 
   @@map("order")
 }
-
 
 enum RoleEnum {
   admin
